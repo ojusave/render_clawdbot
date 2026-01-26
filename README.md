@@ -60,6 +60,12 @@ Optional (gateway startup tolerance):
 
 The gateway is protected by a token. The wrapper auto-redirects `/` and `/clawdbot` to include `?token=...` so the Control UI can connect reliably.
 
+## Screenshots
+
+<img src="public/UI%20-1.png" alt="Clawdbot on Render UI (screenshot 1)" width="900" />
+
+<img src="public/UI%20-%202%20.png" alt="Clawdbot on Render UI (screenshot 2)" width="900" />
+
 ## Troubleshooting
 
 - **WebSocket closes (code 1008) / “proxy headers detected”**: this wrapper strips `Forwarded` / `X-Forwarded-*` headers when proxying to the internal loopback gateway, because forwarding them can make local clients appear “remote behind an untrusted proxy”.
