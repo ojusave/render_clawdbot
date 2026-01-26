@@ -19,24 +19,36 @@ Deploy **Clawdbot** on **Render** with a built-in installer and a proxied Contro
 - **Persistent disk** mounted at `/data` for state + workspace
 - **Export / Import backups** to migrate deployments
 
-## Deploy (Blueprint)
+## Installation
 
-- **Plan requirement**: this Blueprint targets Render’s **Standard** plan (paid) because it uses a **persistent disk** at `/data`. See: `https://docs.render.com/pricing#services`.
+**Plan requirement**: This Blueprint targets Render's **Standard** plan (paid) because it uses a **persistent disk** at `/data`. See: `https://docs.render.com/pricing#services`.
 
-1) Click **Deploy to Render**.
-2) Render detects `render.yaml` and creates the web service + disk.
-3) When prompted, set:
-   - `RENDER_SETUP_PASSWORD` (required)
-4) After deploy:
-   - Open installer: `https://<your-service>.onrender.com/install`
-   - Open UI: `https://<your-service>.onrender.com/` or `/clawdbot`
+1. Click the **Deploy to Render** button above.
+2. Render will detect `render.yaml` and automatically create the web service and persistent disk.
+3. When prompted during deployment, set the required environment variable:
+   - `RENDER_SETUP_PASSWORD`: Choose a secure password to protect the installer (required)
+4. Wait for the deployment to complete. Render will automatically generate `RENDER_GATEWAY_TOKEN` for you.
 
-## Installer password (`RENDER_SETUP_PASSWORD`)
+## Configuration
 
-`/install` uses **HTTP Basic Auth**.
+After deployment, you need to configure Clawdbot using the install wizard:
 
-- **Username**: anything
-- **Password**: the value of `RENDER_SETUP_PASSWORD`
+1. **Access the installer**: Navigate to `https://<your-service>.onrender.com/install`
+2. **Authenticate**: The installer uses HTTP Basic Auth:
+   - **Username**: any value (can be left blank)
+   - **Password**: the value you set for `RENDER_SETUP_PASSWORD`
+3. **Complete the setup**: Follow the install wizard to configure Clawdbot:
+   - Select your authentication group and method
+   - Configure any required settings
+   - The installer will set up Clawdbot with your preferences
+
+## Usage
+
+Once configured, you can access and use Clawdbot:
+
+- **Control UI**: Navigate to `https://<your-service>.onrender.com/` or `https://<your-service>.onrender.com/clawdbot`
+- The Control UI is reverse-proxied and includes full WebSocket support
+- All state and workspace data is persisted on the disk at `/data`
 
 ## Persistence
 
@@ -60,7 +72,7 @@ This template stores state and workspace on the persistent disk:
   - `CLAWDBOT_GIT_REF`: Docker build arg to pin the Clawdbot version (tag/branch/commit)
 - **Optional (branding)**
   - `RENDER_LOGO_FILE`: filename inside `public/` to show in the header (default: `Render logo - Black.jpg`)
-  - `RENDER_DEPLOY_URL`: URL used by the “Deploy on Render” button (default: `https://render.com/deploy?repo=https://github.com/ojusave/render_clawdbot`)
+  - `RENDER_DEPLOY_URL`: URL used by the "Deploy on Render" button (default: `https://render.com/deploy?repo=https://github.com/ojusave/render_clawdbot`)
 - **Optional (gateway startup tolerance)**
   - `GATEWAY_READY_TIMEOUT_MS` (default `60000`)
   - `GATEWAY_READY_PATH` (default `/healthz`)
@@ -69,7 +81,7 @@ This template stores state and workspace on the persistent disk:
 
 ## Troubleshooting
 
-- **WebSocket closes (code 1008) / “proxy headers detected”**: this wrapper strips `Forwarded` / `X-Forwarded-*` headers when proxying to the internal loopback gateway, because forwarding them can make local clients appear “remote behind an untrusted proxy”.
+- **WebSocket closes (code 1008) / "proxy headers detected"**: this wrapper strips `Forwarded` / `X-Forwarded-*` headers when proxying to the internal loopback gateway, because forwarding them can make local clients appear "remote behind an untrusted proxy".
 
 ## Contributing
 
@@ -78,4 +90,3 @@ Fixes and improvements are welcome. See `CONTRIBUTING.md`.
 ## License
 
 MIT. See `LICENSE`.
-
