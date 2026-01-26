@@ -1,6 +1,6 @@
 # Render Clawdbot Wrapper (template)
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ojusave/clawdbot)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ojusave/render_clawdbot)
 
 This repo deploys **Clawdbot** on **Render** with:
 
@@ -59,4 +59,16 @@ Optional (gateway startup tolerance):
 ## Control UI token
 
 The gateway is protected by a token. The wrapper auto-redirects `/` and `/clawdbot` to include `?token=...` so the Control UI can connect reliably.
+
+## Troubleshooting
+
+- **WebSocket closes (code 1008) / “proxy headers detected”**: this wrapper strips `Forwarded` / `X-Forwarded-*` headers when proxying to the internal loopback gateway, because forwarding them can make local clients appear “remote behind an untrusted proxy”.
+
+## Contributing
+
+Fixes and improvements are welcome. See `CONTRIBUTING.md`.
+
+## License
+
+MIT. See `LICENSE`.
 

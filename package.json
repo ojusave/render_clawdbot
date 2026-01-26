@@ -2,6 +2,14 @@
   "name": "render-clawdbot-wrapper",
   "private": true,
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ojusave/render_clawdbot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ojusave/render_clawdbot/issues"
+  },
   "engines": {
     "node": ">=22"
   },
