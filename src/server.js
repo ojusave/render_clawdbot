@@ -361,23 +361,25 @@ function buildOnboardArgs(payload) {
   if (payload.authChoice) {
     args.push("--auth-choice", payload.authChoice);
 
-    // Map secret to correct flag for common choices.
+    // Map authChoice -> CLI flag for API-key–based providers. Keep in sync with moltbot
+    // register.onboard (--auth-choice / --*-api-key) and onboard-non-interactive/local/auth-choice.
     const secret = (payload.authSecret || "").trim();
     const map = {
-      "openai-api-key": "--openai-api-key",
       "apiKey": "--anthropic-api-key",
+      "openai-api-key": "--openai-api-key",
       "openrouter-api-key": "--openrouter-api-key",
       "ai-gateway-api-key": "--ai-gateway-api-key",
       "moonshot-api-key": "--moonshot-api-key",
       "kimi-code-api-key": "--kimi-code-api-key",
       "gemini-api-key": "--gemini-api-key",
       "zai-api-key": "--zai-api-key",
+      "xiaomi-api-key": "--xiaomi-api-key",
       "minimax-api": "--minimax-api-key",
       "minimax-api-lightning": "--minimax-api-key",
+      "minimax-cloud": "--minimax-api-key",
       "synthetic-api-key": "--synthetic-api-key",
       "venice-api-key": "--venice-api-key",
       "opencode-zen": "--opencode-zen-api-key",
-      // Legacy alias (upstream supports it).
       "setup-token": "--token",
     };
     const flag = map[payload.authChoice];
@@ -573,6 +575,7 @@ app.get("/install", requireInstallAuth, (_req, res) => {
     <p class="muted">Channels, skills, and config you can add after setup:</p>
     <ul style="margin: 0.5rem 0; padding-left: 1.25rem; color: var(--text-secondary);">
       <li><strong>Channels</strong> — WhatsApp, Google Chat, Signal, iMessage, MS Teams, Matrix, and more: use Control UI or <code>moltbot channels add --channel &lt;name&gt;</code>. <a href="https://docs.molt.bot/channels" target="_blank" rel="noreferrer">Channels docs</a></li>
+      <li><strong>More model providers</strong> — Cerebras, Groq, xAI, Mistral, etc. are supported via env vars (e.g. <code>CEREBRAS_API_KEY</code>, <code>GROQ_API_KEY</code>) or <code>models.providers</code> in config. Set them in Render Environment or after install. <a href="https://docs.molt.bot/concepts/model-providers" target="_blank" rel="noreferrer">Model providers</a></li>
       <li><strong>Skills</strong> — Install from <a href="https://clawdhub.com" target="_blank" rel="noreferrer">ClawdHub</a> or via the Control UI.</li>
       <li><strong>Doctor</strong> — Run <code>moltbot doctor</code> (or use the Run doctor button above) for migrations and config checks. <a href="https://docs.molt.bot/gateway/doctor" target="_blank" rel="noreferrer">Doctor docs</a></li>
       <li><strong>Configuration</strong> — Full config reference: <a href="https://docs.molt.bot/gateway/configuration" target="_blank" rel="noreferrer">Configuration</a></li>
