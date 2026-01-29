@@ -60,7 +60,7 @@
     return httpJson('/install/api/status').then(function (j) {
       var ver = j.moltbotVersion ? (' | ' + j.moltbotVersion) : '';
       var note = j.moltbotMissing ? ' (moltbot binary missing in this environment)' : '';
-      setStatus((j.configured ? 'Installed - open /moltbot' : 'Not installed - run installer below') + ver + note);
+      setStatus((j.configured ? 'Installed — Open Control UI above' : 'Not installed — run installer below') + ver + note);
       renderAuth(j.authGroups || []);
       if (j.warnings && j.warnings.length) {
         for (var i = 0; i < j.warnings.length; i++) {
@@ -104,6 +104,31 @@
       logEl.textContent += '\nError: ' + String(e) + '\n';
     });
   };
+
+  // Run doctor
+  var doctorBtn = document.getElementById('doctorBtn');
+  if (doctorBtn) {
+    doctorBtn.onclick = function () {
+      logEl.textContent += '\nRunning doctor...\n';
+      fetch('/install/api/doctor', { method: 'POST', credentials: 'same-origin' })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          logEl.textContent += (j.output || JSON.stringify(j, null, 2)) + '\n';
+        })
+        .catch(function (e) { logEl.textContent += 'Error: ' + String(e) + '\n'; });
+    };
+  }
+
+  // Channel help (show channels add --help in log)
+  var channelHelpBtn = document.getElementById('channelHelpBtn');
+  if (channelHelpBtn) {
+    channelHelpBtn.onclick = function () {
+      logEl.textContent += '\n--- moltbot channels add --help ---\n';
+      httpJson('/install/api/status').then(function (j) {
+        logEl.textContent += (j.channelsAddHelp || '(not available)') + '\n';
+      }).catch(function (e) { logEl.textContent += 'Error: ' + String(e) + '\n'; });
+    };
+  }
 
   // Pairing approve helper
   var pairingBtn = document.getElementById('pairingApprove');

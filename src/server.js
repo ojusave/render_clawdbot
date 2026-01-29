@@ -440,22 +440,43 @@ app.get("/install", requireInstallAuth, (_req, res) => {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🦞 Moltbot Installer</title>
+  <title>🦞 Moltbot Installer — Clawdbot on Render</title>
+  <meta name="description" content="Moltbot — The AI that actually does things. Deploy on Render with installer and Control UI." />
   <style>
-    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 2rem auto; max-width: 1100px; padding: 0 1.25rem; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 1.25rem; margin: 1rem 0; }
+    :root {
+      --bg-deep: #050810;
+      --bg-surface: #0a0f1a;
+      --bg-elevated: #111827;
+      --coral-bright: #ff4d4d;
+      --cyan-bright: #00e5cc;
+      --text-primary: #f0f4ff;
+      --text-secondary: #8892b0;
+      --text-muted: #5a6480;
+      --border-subtle: rgba(136, 146, 176, 0.15);
+      --border-accent: rgba(255, 77, 77, 0.3);
+    }
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 2rem auto; max-width: 1100px; padding: 0 1.25rem; background: var(--bg-deep); color: var(--text-primary); }
+    .card { border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; background: rgba(10, 15, 26, 0.6); }
     .brandbar { display:flex; align-items:center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
     .brand { display:flex; align-items:center; gap: 0.75rem; text-decoration:none; color: inherit; }
     .brand img { height: 32px; width: auto; display:block; }
     .actions { margin-left: auto; display:flex; align-items:center; gap: 0.75rem; }
-    a.actionBtn { display:inline-flex; align-items:center; justify-content:center; padding: 0.6rem 0.9rem; border-radius: 999px; border: 1px solid #ddd; background:#111; color:#fff; text-decoration:none; font-weight:800; }
+    a.actionBtn { display:inline-flex; align-items:center; justify-content:center; padding: 0.6rem 0.9rem; border-radius: 999px; border: 1px solid var(--border-accent); background: var(--coral-bright); color: #fff; text-decoration:none; font-weight: 700; }
+    a.actionBtn:hover { background: #e63946; }
+    h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    .tagline { color: var(--coral-bright); font-size: 0.95rem; margin-bottom: 1.5rem; }
     label { display:block; margin-top: 0.75rem; font-weight: 600; }
-    input, select { width: 100%; padding: 0.6rem; margin-top: 0.25rem; }
-    button { padding: 0.8rem 1.2rem; border-radius: 10px; border: 0; background: #111; color: #fff; font-weight: 700; cursor: pointer; }
-    code { background: #f6f6f6; padding: 0.1rem 0.3rem; border-radius: 6px; }
-    .muted { color: #555; }
+    input, select { width: 100%; padding: 0.6rem; margin-top: 0.25rem; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary); }
+    input::placeholder { color: var(--text-muted); }
+    button { padding: 0.8rem 1.2rem; border-radius: 10px; border: 0; background: var(--coral-bright); color: #fff; font-weight: 700; cursor: pointer; }
+    button:hover { background: #e63946; }
+    code { background: var(--bg-elevated); padding: 0.1rem 0.3rem; border-radius: 6px; color: var(--cyan-bright); }
+    .muted { color: var(--text-muted); }
     .row { display: flex; gap: 1rem; flex-wrap: wrap; }
     .row > div { flex: 1; min-width: 280px; }
+    a { color: var(--cyan-bright); }
+    a:hover { color: var(--coral-bright); }
+    pre { background: var(--bg-elevated); padding: 1rem; border-radius: 8px; overflow-x: auto; color: var(--text-secondary); }
   </style>
 </head>
 <body>
@@ -468,12 +489,13 @@ app.get("/install", requireInstallAuth, (_req, res) => {
     </div>
   </div>
   <h1>🦞 Moltbot Installer</h1>
+  <p class="tagline">The AI that actually does things. Configure Clawdbot on Render.</p>
 
   <div class="card">
     <h2>Status</h2>
     <div id="status">Loading...</div>
     <div style="margin-top: 0.75rem">
-      <a href="/moltbot?token=${MOLTBOT_GATEWAY_TOKEN}" target="_blank" rel="noreferrer">Open Moltbot UI</a>
+      <a href="/moltbot?token=${MOLTBOT_GATEWAY_TOKEN}" target="_blank" rel="noreferrer">Open Control UI</a>
       &nbsp;|&nbsp;
       <a href="/install/export" target="_blank">Download backup (.tar.gz)</a>
     </div>
@@ -504,7 +526,8 @@ app.get("/install", requireInstallAuth, (_req, res) => {
 
   <div class="card">
     <h2>2) Optional: Channels</h2>
-    <p class="muted">You can add channels later. These are just shortcuts if you want bots wired up immediately.</p>
+    <p class="muted">You can add channels later. These are just shortcuts if you want bots wired up immediately. WhatsApp, Google Chat, Signal, and more: add via Control UI or <code>moltbot channels add</code> after install.</p>
+    <p class="muted" style="margin-top: 0.5rem"><button type="button" id="channelHelpBtn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--cyan-bright); cursor: pointer;">Show channel add --help</button> (writes CLI help to log below)</p>
     <div class="row">
       <div>
         <label>Telegram bot token (optional)</label>
@@ -537,11 +560,23 @@ app.get("/install", requireInstallAuth, (_req, res) => {
     <h2>3) Run installer</h2>
     <button id="run">Install / Configure</button>
     <button id="pairingApprove" style="background:#1f2937; margin-left:0.5rem">Approve pairing</button>
+    <button id="doctorBtn" style="background:#0f172a; margin-left:0.5rem">Run doctor</button>
     <button id="reset" style="background:#444; margin-left:0.5rem">Reset install</button>
     <pre id="log" style="white-space:pre-wrap"></pre>
     <p class="muted">
-      Reset deletes the config file so you can rerun onboarding. Pairing approval lets you grant DM access when <code>dmPolicy=pairing</code>.
+      Reset deletes the config file so you can rerun onboarding. Pairing approval lets you grant DM access when <code>dmPolicy=pairing</code>. Doctor runs migrations and config checks.
     </p>
+  </div>
+
+  <div class="card">
+    <h2>After install — more from Moltbot</h2>
+    <p class="muted">Channels, skills, and config you can add after setup:</p>
+    <ul style="margin: 0.5rem 0; padding-left: 1.25rem; color: var(--text-secondary);">
+      <li><strong>Channels</strong> — WhatsApp, Google Chat, Signal, iMessage, MS Teams, Matrix, and more: use Control UI or <code>moltbot channels add --channel &lt;name&gt;</code>. <a href="https://docs.molt.bot/channels" target="_blank" rel="noreferrer">Channels docs</a></li>
+      <li><strong>Skills</strong> — Install from <a href="https://clawdhub.com" target="_blank" rel="noreferrer">ClawdHub</a> or via the Control UI.</li>
+      <li><strong>Doctor</strong> — Run <code>moltbot doctor</code> (or use the Run doctor button above) for migrations and config checks. <a href="https://docs.molt.bot/gateway/doctor" target="_blank" rel="noreferrer">Doctor docs</a></li>
+      <li><strong>Configuration</strong> — Full config reference: <a href="https://docs.molt.bot/gateway/configuration" target="_blank" rel="noreferrer">Configuration</a></li>
+    </ul>
   </div>
 
   <div class="card">
@@ -699,6 +734,14 @@ app.post("/install/api/run", requireInstallAuth, async (req, res) => {
   }
 });
 
+app.post("/install/api/doctor", requireInstallAuth, async (_req, res) => {
+  if (!isConfigured()) {
+    return res.status(400).json({ ok: false, output: "Not installed. Run the installer first." });
+  }
+  const r = await runCmd(MOLTBOT_NODE, moltArgs(["doctor", "--non-interactive"]));
+  return res.status(r.code === 0 ? 200 : 200).json({ ok: r.code === 0, output: r.output || "" });
+});
+
 app.post("/install/api/pairing/approve", requireInstallAuth, async (req, res) => {
   const { channel, code } = req.body || {};
   if (!channel || !code) return res.status(400).json({ ok: false, error: "Missing channel or code" });
@@ -834,18 +877,37 @@ function landingHtml() {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Moltbot on Render</title>
+  <title>Moltbot on Render — The AI that actually does things</title>
+  <meta name="description" content="Moltbot — The AI that actually does things. Deploy Clawdbot on Render with installer and Control UI." />
   <style>
-    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 2rem auto; max-width: 1100px; padding: 0 1.25rem; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 1.25rem; margin: 1rem 0; }
-    a.button { display: inline-block; padding: 0.8rem 1.2rem; border-radius: 10px; background: #111; color: #fff; text-decoration: none; font-weight: 700; }
-    .muted { color: #555; }
-    code { background: #f6f6f6; padding: 0.1rem 0.3rem; border-radius: 6px; }
+    :root {
+      --bg-deep: #050810;
+      --bg-surface: #0a0f1a;
+      --bg-elevated: #111827;
+      --coral-bright: #ff4d4d;
+      --cyan-bright: #00e5cc;
+      --text-primary: #f0f4ff;
+      --text-secondary: #8892b0;
+      --text-muted: #5a6480;
+      --border-subtle: rgba(136, 146, 176, 0.15);
+      --border-accent: rgba(255, 77, 77, 0.3);
+    }
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 2rem auto; max-width: 1100px; padding: 0 1.25rem; background: var(--bg-deep); color: var(--text-primary); }
+    .card { border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; background: rgba(10, 15, 26, 0.6); }
+    a.button { display: inline-block; padding: 0.8rem 1.2rem; border-radius: 10px; background: var(--coral-bright); color: #fff; text-decoration: none; font-weight: 700; margin-right: 0.5rem; }
+    a.button:hover { background: #e63946; }
+    .muted { color: var(--text-muted); }
+    code { background: var(--bg-elevated); padding: 0.1rem 0.3rem; border-radius: 6px; color: var(--cyan-bright); }
     .brandbar { display:flex; align-items:center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
     .brand { display:flex; align-items:center; gap: 0.75rem; text-decoration:none; color: inherit; }
     .brand img { height: 32px; width: auto; display:block; }
     .actions { margin-left: auto; display:flex; align-items:center; gap: 0.75rem; }
-    a.actionBtn { display:inline-flex; align-items:center; justify-content:center; padding: 0.6rem 0.9rem; border-radius: 999px; border: 1px solid #ddd; background:#111; color:#fff; text-decoration:none; font-weight:800; }
+    a.actionBtn { display:inline-flex; align-items:center; justify-content:center; padding: 0.6rem 0.9rem; border-radius: 999px; border: 1px solid var(--border-accent); background: var(--coral-bright); color:#fff; text-decoration:none; font-weight:700; }
+    a.actionBtn:hover { background: #e63946; }
+    .tagline { color: var(--coral-bright); font-size: 1rem; margin-bottom: 1rem; }
+    .links { margin-top: 1rem; font-size: 0.9rem; }
+    .links a { color: var(--cyan-bright); }
+    .links a:hover { color: var(--coral-bright); }
   </style>
 </head>
 <body>
@@ -857,18 +919,22 @@ function landingHtml() {
       <a class="actionBtn" href="${RENDER_DEPLOY_URL}" target="_blank" rel="noreferrer">Deploy on Render</a>
     </div>
   </div>
-  <h1>Moltbot on Render</h1>
+  <h1>🦞 Moltbot on Render</h1>
+  <p class="tagline">The AI that actually does things. Deploy Clawdbot with a built-in installer and Control UI.</p>
   <div class="card">
     <p class="muted">Wrapper status: <strong>${installed ? "installed" : "not installed"}</strong></p>
     <p class="muted">State dir: <code>${STATE_DIR}</code><br/>Workspace dir: <code>${WORKSPACE_DIR}</code></p>
     <p>
       ${
         installed
-          ? `<a class="button" href="/moltbot?token=${MOLTBOT_GATEWAY_TOKEN}" rel="noreferrer">Open Moltbot UI</a>`
+          ? `<a class="button" href="/moltbot?token=${MOLTBOT_GATEWAY_TOKEN}" rel="noreferrer">Open Control UI</a>`
           : `<a class="button" href="/install">Open Installer</a>`
       }
     </p>
     <p class="muted">If you just deployed, go to <code>/install</code> first.</p>
+    <div class="links">
+      <a href="https://docs.clawd.bot" target="_blank" rel="noreferrer">Docs</a> · <a href="https://discord.gg/clawd" target="_blank" rel="noreferrer">Discord</a> · <a href="https://github.com/moltbot/moltbot" target="_blank" rel="noreferrer">GitHub</a>
+    </div>
   </div>
 </body>
 </html>`;

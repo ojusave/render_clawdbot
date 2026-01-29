@@ -4,7 +4,7 @@ Deploy **Moltbot** on **Render** with a built-in installer and a proxied Control
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ojusave/render_clawdbot)
 
-`https://docs.molt.bot` · `https://github.com/moltbot/moltbot`
+[Docs](https://docs.clawd.bot) · [Discord](https://discord.gg/clawd) · [GitHub](https://github.com/moltbot/moltbot)
 
 ## UI preview
 
